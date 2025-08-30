@@ -168,52 +168,7 @@ void divide_bignum(bignum *a, bignum *b, bignum *c){
     b->signbit = bsing;
 }
 
-void le_bignum_b(string & l, int pos, bignum * b){
-    for (int j = pos; j < l.size();j++){
-        b->digits[l.size()-1-j] = l[j] - '0';
-    }
-    b->last_digit = l.size() - pos;
-}
 
 int main(){
-    vector <string> lines;
-    string line;
-    ll max = INT_MAX;
-    bignum max_int;
-    initialize_bignum(&max_int);
-    ll_to_bignum(max, &max_int);
-    while (getline(cin,line)){
-        lines.push_back(line);
-    }
-    for (string& l : lines){
-        bignum a, b, c;
-        initialize_bignum(&a); initialize_bignum(&b); initialize_bignum(&c);
-        char operador;
-        int comp = 0;
-        int comp2 = 0;
-        int comp3 = 0;
-        for (int i = 0; i < l.size();i++){
-            if (l[i] == ' '){
-                a.last_digit = i-1;
-                for (int j = 0; j < i; j++){
-                    a.digits[i-j-1] = l[j] - '0';
-                }
-                operador = l[i+1];
-                le_bignum_b(l, i+3, &b);
-                break;
-            }
-        }
-        zero_justify(&a);
-        zero_justify(&b);
-        comp = compare_bignum(&max_int, &a);
-        comp2 = compare_bignum(&max_int, &b);
-        if (operador == '+') add_bignum(&a,&b, &c);
-        else multiply_bignum(&a, &b, &c);
-        zero_justify(&c);
-        comp3 = compare_bignum(&max_int, &c);
-        cout << l << endl;
-        if (comp == 1) cout << "first number too big" << endl;
-        if (comp2 == 1) cout << "second number too big" << endl;
-        if (comp3 == 1) cout << "result too big" << endl;
-    }
+    
 }

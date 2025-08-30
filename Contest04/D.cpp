@@ -1,9 +1,13 @@
 #include <bits/stdc++.h>
-#define MAXDIGITS 600
+#define MAXDIGITS 1000
 #define MINUS -1
 #define PLUS 1
 using namespace std;
 typedef unsigned long long ll;
+
+void add_bignum(bignum *a, bignum *b, bignum *c);
+void subtract_bignum(bignum *a, bignum *b, bignum *c);
+
 
 typedef struct {
     char digits[MAXDIGITS];
@@ -57,6 +61,32 @@ void zero_justify(bignum *n){
     if ((n->last_digit == 0) and (n->digits[0] == 0)) n->signbit = PLUS;
 }
 
+
+void add_bignum(bignum *a, bignum *b, bignum *c){
+    int i, carry;
+    initialize_bignum(c);
+    if (a->signbit == b->signbit) c->signbit = a->signbit;
+    else{
+        if (a->signbit == MINUS){
+            a->signbit = PLUS;
+            subtract_bignum(b,c,a);
+            a->signbit = MINUS;
+        }
+        else{
+            b->signbit = PLUS;
+            subtract_bignum(a,b,c);
+            b->signbit = MINUS;
+        }
+    }
+    c->last_digit = max(a->last_digit, b->last_digit) +1;
+    carry = 0;
+    for (i = 0; i <= (c->last_digit); i++){
+        c->digits[i] = (char) (carry + a->digits[i] + b->digits[i]) % 10;
+        carry = (carry + a->digits[i] + b->digits[i]) /10;
+    }
+    zero_justify(c);
+}
+
 void subtract_bignum(bignum *a, bignum *b, bignum *c){
     int borrow;
     int v;
@@ -85,31 +115,6 @@ void subtract_bignum(bignum *a, bignum *b, bignum *c){
             borrow = 1;
         }
         c->digits[i] = (char) v;
-    }
-    zero_justify(c);
-}
-
-void add_bignum(bignum *a, bignum *b, bignum *c){
-    int i, carry;
-    initialize_bignum(c);
-    if (a->signbit == b->signbit) c->signbit = a->signbit;
-    else{
-        if (a->signbit == MINUS){
-            a->signbit = PLUS;
-            subtract_bignum(b,c,a);
-            a->signbit = MINUS;
-        }
-        else{
-            b->signbit = PLUS;
-            subtract_bignum(a,b,c);
-            b->signbit = MINUS;
-        }
-    }
-    c->last_digit = max(a->last_digit, b->last_digit) +1;
-    carry = 0;
-    for (i = 0; i <= (c->last_digit); i++){
-        c->digits[i] = (char) (carry + a->digits[i] + b->digits[i]) % 10;
-        carry = (carry + a->digits[i] + b->digits[i]) /10;
     }
     zero_justify(c);
 }
@@ -168,52 +173,29 @@ void divide_bignum(bignum *a, bignum *b, bignum *c){
     b->signbit = bsing;
 }
 
-void le_bignum_b(string & l, int pos, bignum * b){
-    for (int j = pos; j < l.size();j++){
-        b->digits[l.size()-1-j] = l[j] - '0';
+void read_bignum(bignum *n, string & line){
+    n->signbit = PLUS;
+    for (int i = line.size()-1; i >= 0; i--){
+        n->digits[i] = line[line.size()-1 - i] - '0';
     }
-    b->last_digit = l.size() - pos;
+    n->last_digit = line.size()-1;
+}
+
+void print_bignum(bignum *n){
+    for (int i = n->last_digit; i >= 0; i--){
+        cout << char (n->digits[i]+'0');
+    }
+    cout << endl;
 }
 
 int main(){
-    vector <string> lines;
-    string line;
-    ll max = INT_MAX;
-    bignum max_int;
-    initialize_bignum(&max_int);
-    ll_to_bignum(max, &max_int);
-    while (getline(cin,line)){
-        lines.push_back(line);
-    }
-    for (string& l : lines){
-        bignum a, b, c;
+    string s1, s2;
+    bignum a, b, c;
+    initialize_bignum(&a); initialize_bignum(&b); initialize_bignum(&c);
+    while (cin >> s1 >> s2){
+        read_bignum(&a, s1); read_bignum(&b, s2);
+        multiply_bignum(&a, &b, &c);
+        print_bignum(&c);
         initialize_bignum(&a); initialize_bignum(&b); initialize_bignum(&c);
-        char operador;
-        int comp = 0;
-        int comp2 = 0;
-        int comp3 = 0;
-        for (int i = 0; i < l.size();i++){
-            if (l[i] == ' '){
-                a.last_digit = i-1;
-                for (int j = 0; j < i; j++){
-                    a.digits[i-j-1] = l[j] - '0';
-                }
-                operador = l[i+1];
-                le_bignum_b(l, i+3, &b);
-                break;
-            }
-        }
-        zero_justify(&a);
-        zero_justify(&b);
-        comp = compare_bignum(&max_int, &a);
-        comp2 = compare_bignum(&max_int, &b);
-        if (operador == '+') add_bignum(&a,&b, &c);
-        else multiply_bignum(&a, &b, &c);
-        zero_justify(&c);
-        comp3 = compare_bignum(&max_int, &c);
-        cout << l << endl;
-        if (comp == 1) cout << "first number too big" << endl;
-        if (comp2 == 1) cout << "second number too big" << endl;
-        if (comp3 == 1) cout << "result too big" << endl;
     }
 }
