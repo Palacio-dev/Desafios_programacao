@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define MAXDIGITS 110
+#define MAXDIGITS 500
 #define MINUS -1
 #define PLUS 1
 using namespace std;
@@ -140,6 +140,14 @@ void multiply_bignum(bignum *a, bignum *b, bignum *c){
     zero_justify(c);
 }
 
+void copy_bignum(bignum *src, bignum *dest) {
+    dest->signbit = src->signbit;
+    dest->last_digit = src->last_digit;
+    for (int i = 0; i <= src->last_digit; i++) {
+        dest->digits[i] = src->digits[i];
+    }
+}
+
 void divide_bignum(bignum *a, bignum *b, bignum *c){
     bignum row, tmp;
     initialize_bignum(&tmp); initialize_bignum(&row);
@@ -186,10 +194,6 @@ void drop_last_digit(bignum *n, bignum *e){
     divide_bignum(n, &ten,e);
 }
 
-bool is_zero(bignum *n){
-    return (n->last_digit == 0) && (n->digits[0] == 0);
-}
-
 void mod_bignum(bignum *a, bignum *b, bignum *c){
     bignum quotient, product;
     initialize_bignum(&quotient);
@@ -201,18 +205,19 @@ void mod_bignum(bignum *a, bignum *b, bignum *c){
 }
 
 void calcula_gcd(bignum *a, bignum *b, bignum *result){
-    bignum temp_a, temp_b, remainder;
-    temp_a = *a;
-    temp_b = *b;
-    
-    // Algoritmo de Euclides: GCD(a,b) = GCD(b, a mod b)
-    while (!is_zero(&temp_b)) {
-        mod_bignum(&temp_a, &temp_b, &remainder);
-        temp_a = temp_b;
-        temp_b = remainder;
+    bignum temp_a, temp_b, quotient, remainder;
+    initialize_bignum(&temp_a); initialize_bignum(&temp_b);
+    initialize_bignum(&quotient); initialize_bignum(&remainder); 
+    copy_bignum(a, &temp_a); copy_bignum(b, &temp_b);
+    while (temp_b.digits[0] != 0) {
+        mod_bignum(&temp_a, &temp_b, &remainder); //pega o resto da divisão
+        zero_justify(&temp_b);
+        copy_bignum(&temp_b, &temp_a);            //temp_a = temp_b
+        zero_justify(&temp_a);
+        copy_bignum(&remainder, &temp_b);         //temp_b = remainder
     }
-    
-    *result = temp_a;
+    copy_bignum(&temp_a, result);
+    result->signbit = PLUS;
 }
 
 int main(){
@@ -221,6 +226,8 @@ int main(){
     initialize_bignum(&a); initialize_bignum(&b); initialize_bignum(&result);
     cin >> line1 >> line2;
     read_bignum(&a, line1); read_bignum(&b, line2);
-    calcula_gcd(&a, &b, &result);
-    print_bignum(&result);
+    if (compare_bignum(&a, &b) == 0) print_bignum(&a);
+    else cout << 1 << endl;
+    // calcula_gcd(&a, &b, &result);
+    // print_bignum(&result);
 }

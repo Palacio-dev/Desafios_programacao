@@ -1,24 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef unsigned long long ll;
 
-int main(){
-    int t, n;
-    char t1, t2,t3,t4;
+int main() {
+    int t;
     cin >> t;
-    cin >> t1;
-    cin >> t2;
-    cin >> t3;
-    cin >> t4;
-    for (int i = 0; i < t;i++){
-        string s;
+    while (t--){
+        int n;
         cin >> n;
-        getline(cin, s);
-        stringstream ss(s);
-        if (n % 2 == 0){
-            cout << "first" << endl;
+        ll nim_sum = 0;
+        for (int i = 0; i < n; i++){
+            ll temp;
+            cin >> temp;
+            nim_sum ^= temp;
         }
-        else{
-            cout << "second" << endl;
-        }
+        if (nim_sum == 0) cout << "second" << endl;
+        else cout << "first" << endl;
     }
-}   
+}
