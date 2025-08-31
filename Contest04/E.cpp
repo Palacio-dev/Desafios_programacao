@@ -186,22 +186,41 @@ void drop_last_digit(bignum *n, bignum *e){
     divide_bignum(n, &ten,e);
 }
 
-int main(){
-    string line;
-    bignum a, b, c, seventeen, e, mult;
-    initialize_bignum(&seventeen);
-    ll_to_bignum(17, &seventeen);
-    while (cin >> line){
-        if (line[0] == '0') break;
-        initialize_bignum(&a); initialize_bignum(&b); initialize_bignum(&c); initialize_bignum(&e);initialize_bignum(&mult);
-        read_bignum(&a, line); //numero do input
-        ll last_digit = a.digits[0];
-        ll_to_bignum(5*last_digit, &b); //b = 5 * last_digit
-        drop_last_digit(&a, &e);        //e = a (sem último digito)
-        subtract_bignum(&e, &b, &c); // c = e - b
-        divide_bignum(&c, &seventeen, &a);   // a = c/17
-        multiply_bignum(&seventeen, &a, &mult); //mult = (c/17) * 17
-        if (compare_bignum(&mult, &c) == 0) cout << 1 << endl;
-        else cout << 0 << endl;
+bool is_zero(bignum *n){
+    return (n->last_digit == 0) && (n->digits[0] == 0);
+}
+
+void mod_bignum(bignum *a, bignum *b, bignum *c){
+    bignum quotient, product;
+    initialize_bignum(&quotient);
+    initialize_bignum(&product);
+    
+    divide_bignum(a, b, &quotient);
+    multiply_bignum(&quotient, b, &product);
+    subtract_bignum(a, &product, c);
+}
+
+void calcula_gcd(bignum *a, bignum *b, bignum *result){
+    bignum temp_a, temp_b, remainder;
+    temp_a = *a;
+    temp_b = *b;
+    
+    // Algoritmo de Euclides: GCD(a,b) = GCD(b, a mod b)
+    while (!is_zero(&temp_b)) {
+        mod_bignum(&temp_a, &temp_b, &remainder);
+        temp_a = temp_b;
+        temp_b = remainder;
     }
+    
+    *result = temp_a;
+}
+
+int main(){
+    string line1, line2;
+    bignum a,b, result;
+    initialize_bignum(&a); initialize_bignum(&b); initialize_bignum(&result);
+    cin >> line1 >> line2;
+    read_bignum(&a, line1); read_bignum(&b, line2);
+    calcula_gcd(&a, &b, &result);
+    print_bignum(&result);
 }
