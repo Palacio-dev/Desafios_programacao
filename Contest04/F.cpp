@@ -5,15 +5,14 @@
 using namespace std;
 typedef unsigned long long ll;
 
-void add_bignum(bignum *a, bignum *b, bignum *c);
-void subtract_bignum(bignum *a, bignum *b, bignum *c);
-
-
 typedef struct {
     char digits[MAXDIGITS];
     int signbit;
     int last_digit;
 } bignum;
+
+void add_bignum(bignum *a, bignum *b, bignum *c);
+void subtract_bignum(bignum *a, bignum *b, bignum *c);
 
 void ll_to_bignum(ll s, bignum *n){
     int i;
@@ -198,8 +197,8 @@ void read_reversed(bignum *n, string & line){
 
 void revert_bignum(bignum * n, bignum * invertido){
     invertido->last_digit = n->last_digit;
-    for (int i = 0; i < n->last_digit; i++){
-        invertido[i] = n->digits[n->last_digit - i] - '0';
+    for (int i = 0; i <= n->last_digit; i++){
+        invertido->digits[i] = (char) (n->digits[n->last_digit - i]);
     }
 }
 
@@ -215,6 +214,7 @@ void revert_bignum(bignum * n, bignum * invertido){
         zero_justify(&a); zero_justify(&b);
         add_bignum(&a, &b, &result);
         revert_bignum(&result, &result_inverted);
+        zero_justify(&result_inverted);
         print_bignum(&result_inverted);
     }
  }

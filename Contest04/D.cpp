@@ -5,15 +5,14 @@
 using namespace std;
 typedef unsigned long long ll;
 
-void add_bignum(bignum *a, bignum *b, bignum *c);
-void subtract_bignum(bignum *a, bignum *b, bignum *c);
-
-
 typedef struct {
     char digits[MAXDIGITS];
     int signbit;
     int last_digit;
 } bignum;
+
+void add_bignum(bignum *a, bignum *b, bignum *c);
+void subtract_bignum(bignum *a, bignum *b, bignum *c);
 
 void ll_to_bignum(ll s, bignum *n){
     int i;

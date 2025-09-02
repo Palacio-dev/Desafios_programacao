@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define MAXDIGITS 220
+#define MAXDIGITS 110
 #define MINUS -1
 #define PLUS 1
 using namespace std;
@@ -223,18 +223,28 @@ int main(){
     initialize_bignum(&power1); initialize_bignum(&power2); initialize_bignum(&dois);
     ll_to_bignum(1,&um); ll_to_bignum(2,&dois);
     while (cin >> num1 >> num2 >> num3){
-        initialize_bignum(&t); initialize_bignum(&a); initialize_bignum(&b);
-        initialize_bignum(&numerador); initialize_bignum(&denomidador); initialize_bignum(&result);
-        ll_to_bignum(num1, &t); ll_to_bignum(num2, &a); ll_to_bignum(num3, &b);
         cout << '(' << num1 << '^' << num2 << "-1)"
          << '/'
          << '(' << num1 << '^' << num3 << "-1) ";
+        if (num2 % num3 != 0){
+            cout << "is not an integer with less than 100 digits." << endl;
+            continue;
+        }
+        ll k = num2/num3;
+        double aprox = log10((double)k) + (num2 - num3) * log10((double)num1);
+        ll digits = (ll)floor(aprox) + 1;
+        if (digits >= 100) {
+            cout << "is not an integer with less than 100 digits." << endl;
+            continue;
+        }
+        initialize_bignum(&t); initialize_bignum(&a); initialize_bignum(&b);
+        initialize_bignum(&numerador); initialize_bignum(&denomidador); initialize_bignum(&result);
+        ll_to_bignum(num1, &t); ll_to_bignum(num2, &a); ll_to_bignum(num3, &b);
         power(&t, &a, &power1, &um, &dois);
         subtract_bignum(&power1, &um, &numerador);
         power(&t, &b, &power2, &um, &dois);
         subtract_bignum(&power2, &um, &denomidador);
         divide_bignum(&numerador, &denomidador, &result);
-        if (result.last_digit < 100) print_bignum(&result);
-        else cout << "is not an integer with less than 100 digits." << endl;
+        print_bignum(&result);
     }
 }
