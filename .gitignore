@@ -1,9 +1,4 @@
 # Ignorar todos os executáveis sem extensão (Linux)
 */**/*
 
-# Mas não ignorar arquivos de código-fonte
-!*.cpp
-!*.h
-!*.hpp
-!*.md
-!*/      # manter pastas visíveis
+
