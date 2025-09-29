@@ -2,7 +2,6 @@
 #include <cmath>
 using namespace std;
 
-
 bool eh_primo(int n){
     if (n == 2 or n == 3) return true;
     for (int i = 2;i <= (sqrt(n));i++){
@@ -10,7 +9,6 @@ bool eh_primo(int n){
     }
     return true;
 }
-
 
 int main(){
     int x; cin >> x;

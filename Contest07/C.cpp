@@ -5,7 +5,6 @@ int main(){
    long long a,b;
    cin >> a >> b;
    int res = (a + 1) % 10;
-
    if ((b-a) >= 9) res = 0;
    else if (a == b) res = 1;
    else{    
