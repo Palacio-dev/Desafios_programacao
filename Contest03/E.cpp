@@ -3,18 +3,18 @@ using namespace std;
 typedef unsigned long long ll;
 const long long MOD = 1000000009;
 
-void multiply(ll T[3][3], ll M[3][3]) {
+void multiply(ll T[3][3], ll M[3][3]){
     long long temp[3][3];
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 3; j++){
             temp[i][j] = 0;
-            for (int k = 0; k < 3; k++) {
+            for (int k = 0; k < 3; k++){
                 temp[i][j] = (temp[i][j] + (T[i][k] * M[k][j]) % MOD) % MOD;
             }
         }
     }
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++){
             T[i][j] = temp[i][j];
         }
     }
